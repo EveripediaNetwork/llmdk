@@ -1,9 +1,17 @@
-# python-package
-Python Package Boilerplate
+<p align="center">
+    <img src="./misc/llmdk.svg" alt="Logo" height="70"/>
+<p>
 
-## Usage
-```
-git clone https://github.com/brunneis/python-package
-cd python-package
-./rename.sh
+<div align="center">
+    <h3>
+        <b>LLM Development Kit to easily interact with common APIs</b>
+    </h3>
+</div>
+
+<br>
+
+# Installation
+
+```bash
+pip install .
 ```
