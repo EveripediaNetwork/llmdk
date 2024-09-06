@@ -4,7 +4,7 @@
 
 <div align="center">
     <h3>
-        <b>LLM Development Kit: Streamline Your API Interactions</b>
+        <b>Streamline LLM API Interactions</b>
     </h3>
 </div>
 
