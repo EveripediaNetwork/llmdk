@@ -1,1 +1,6 @@
-
+requests
+openai
+anthropic
+groq
+ollama
+huggingface-hub

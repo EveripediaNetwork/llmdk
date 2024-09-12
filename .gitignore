@@ -1,5 +1,8 @@
 # Custom
+env.sh
+dev/
 .dccache
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

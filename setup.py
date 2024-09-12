@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import find_packages, setup
+
 import llmdk
 
 setup(
@@ -27,7 +27,12 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=[
-        '',
+        'requests',
+        'openai',
+        'anthropic',
+        'groq',
+        'ollama',
+        'huggingface-hub',
     ],
     package_data={
         'llmdk': [
