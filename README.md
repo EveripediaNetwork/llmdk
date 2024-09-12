@@ -4,6 +4,11 @@
 </div>
 <br/>
 
+<p align="center">
+    <a href="https://pypi.python.org/pypi/llmdk/"><img alt="PyPi" src="https://img.shields.io/pypi/v/llmdk.svg?style=flat-square"></a>
+    <a href="https://github.com/EveripediaNetwork/llmdk/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/EveripediaNetwork/llmdk.svg?style=flat-square"></a>
+</p>
+
 # Installation
 
 ```bash
