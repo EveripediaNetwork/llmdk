@@ -4,4 +4,4 @@
 
 from .llmdk import *
 
-__version__ = '1.2409.0'
+__version__ = '1.2409.1'
