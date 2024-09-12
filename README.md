@@ -7,7 +7,7 @@
 # Installation
 
 ```bash
-pip install .
+pip install llmdk
 ```
 
 # Usage
@@ -16,6 +16,7 @@ pip install .
 ```python
 from llmdk import Llmdk, Providers
 
+# You can also set ANTHROPIC_API_KEY
 client = Llmdk(Providers.ANTHROPIC, 'claude-3-5-sonnet-20240620', api_key='***')
 output = client.generate('Who are you?')
 ```
@@ -24,6 +25,7 @@ output = client.generate('Who are you?')
 ```python
 from llmdk import Llmdk, Providers
 
+# You can also set GROQ_API_KEY
 client = Llmdk(Providers.GROQ, 'llama-3.1-70b-versatile', api_key='***')
 output = client.generate('Who are you?')
 ```
@@ -32,6 +34,7 @@ output = client.generate('Who are you?')
 ```python
 from llmdk import Llmdk, Providers
 
+# You can also set HF_TOKEN
 client = Llmdk(Providers.HUGGINGFACE, 'meta-llama/Meta-Llama-3.1-70B-Instruct', api_key='***')
 output = client.generate('Who are you?')
 ```
@@ -48,6 +51,7 @@ output = client.generate('Who are you?')
 ```python
 from llmdk import Llmdk, Providers
 
+# You can also set OPENAI_API_KEY
 client = Llmdk(Providers.OPENAI, 'gpt-4o-2024-08-06', api_key='***')
 output = client.generate('Who are you?')
 ```
