@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./misc/llmdk.svg" alt="Logo" height="70" />
-  <p><strong>Streamline LLM API Interactions</strong></p>
+  <p><strong>Streamline LLM Interactions in Python</strong></p>
 </div>
 <br/>
 
