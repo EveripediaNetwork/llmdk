@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 
 class LlmInterface:
@@ -20,8 +20,8 @@ class LlmInterface:
     def generate(
         self,
         prompt: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
+        system_prompt: Optional[str] = None,
+        messages: Optional[List[Dict[str, str]]] = None,
         **kwargs: Any,
     ) -> str:
         raise NotImplementedError
