@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 import requests
 
@@ -30,19 +30,27 @@ class VllmClient(LlmInterface):
     def generate(
         self,
         prompt: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
+        system_prompt: Optional[str] = None,
+        messages: Optional[List[Dict[str, str]]] = None,
+        **kwargs: Any,
     ) -> str:
-        payload = {
-            "prompt": prompt,
-        }
+        payload = self._generate_kwargs.copy()
+        payload.update(kwargs)
 
-        if temperature is not None:
-            payload['temperature'] = temperature
+        if messages is not None:
+            payload['messages'] = messages
+        else:
+            payload['messages'] = []
+            if system_prompt:
+                payload['messages'].append({
+                    'role': 'system',
+                    'content': system_prompt,
+                })
+            payload['messages'].append({
+                'role': 'user',
+                'content': prompt,
+            })
 
-        if max_tokens is not None:
-            payload['max_tokens'] = max_tokens
-
-        message = self._post(payload)['text'][0]
-
+        response = self._post(payload)
+        message = response['choices'][0]['message']['content']
         return message

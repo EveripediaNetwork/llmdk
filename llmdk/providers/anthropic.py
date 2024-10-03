@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from os import environ as env
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 
 from anthropic import Anthropic
 
@@ -30,24 +30,29 @@ class AnthropicClient(LlmInterface):
     def generate(
         self,
         prompt: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
+        system_prompt: Optional[str] = None,
+        messages: Optional[List[Dict[str, str]]] = None,
+        **kwargs: Any,
     ) -> str:
-        payload = {
-            'model': self._model_name,
-            'messages': [{
-                "role": "user",
-                "content": prompt,
-            }],
-        }
+        payload = self._generate_kwargs.copy()
+        payload.update(kwargs)
+        payload['model'] = self._model_name
+        payload['max_tokens'] = 4096  # Required
 
-        if temperature is not None:
-            payload['temperature'] = temperature
+        if messages is not None:
+            payload['messages'] = messages
+        else:
+            payload['messages'] = []
+            if system_prompt:
+                payload['messages'].append({
+                    'role': 'system',
+                    'content': system_prompt,
+                })
+            payload['messages'].append({
+                'role': 'user',
+                'content': prompt,
+            })
 
-        # Required by Anthropic
-        if max_tokens is None:
-            max_tokens = 4096
-        payload['max_tokens'] = max_tokens
-
-        message = self._client.messages.create(**payload).content[0].text
+        completion = self._client.messages.create(**payload)
+        message = completion.content[0].text
         return message

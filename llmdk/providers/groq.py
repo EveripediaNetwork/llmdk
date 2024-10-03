@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from os import environ as env
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 
 from groq import Groq
 
@@ -14,7 +14,6 @@ class GroqClient(LlmInterface):
         self,
         model_name: str,
         api_key: Optional[str] = None,
-        base_url: Optional[str] = None,
         **kwargs: Any,
     ):
         super().__init__(model_name=model_name, **kwargs)
@@ -24,31 +23,33 @@ class GroqClient(LlmInterface):
 
         self._client = Groq(
             api_key=api_key,
-            base_url=base_url,
         )
 
     def generate(
         self,
         prompt: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
+        system_prompt: Optional[str] = None,
+        messages: Optional[List[Dict[str, str]]] = None,
+        **kwargs: Any,
     ) -> str:
-        payload = {
-            'model': self._model_name,
-            'messages': [{
-                "role": "user",
-                "content": prompt,
-            }],
-        }
+        payload = self._generate_kwargs.copy()
+        payload.update(kwargs)
+        payload['model'] = self._model_name
 
-        if temperature is not None:
-            payload['temperature'] = temperature
+        if messages is not None:
+            payload['messages'] = messages
+        else:
+            payload['messages'] = []
+            if system_prompt:
+                payload['messages'].append({
+                    'role': 'system',
+                    'content': system_prompt,
+                })
+            payload['messages'].append({
+                'role': 'user',
+                'content': prompt,
+            })
 
-        if max_tokens is not None:
-            payload['max_tokens'] = max_tokens
-
-        message = self._client.chat.completions.create(
-            **payload
-        ).choices[0].message.content
-
+        completion = self._client.chat.completions.create(**payload)
+        message = completion.choices[0].message.content
         return message

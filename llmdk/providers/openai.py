@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from os import environ as env
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 
 from openai import OpenAI
 
@@ -33,23 +33,27 @@ class OpenAiClient(LlmInterface):
     def generate(
         self,
         prompt: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
+        system_prompt: Optional[str] = None,
+        messages: Optional[List[Dict[str, str]]] = None,
+        **kwargs: Any,
     ) -> str:
-        payload = {
-            'model': self._model_name,
-            'messages': [{
-                "role": "user",
-                "content": prompt,
-            }],
-        }
+        payload = self._generate_kwargs.copy()
+        payload.update(kwargs)
+        payload['model'] = self._model_name
 
-        if temperature is not None:
-            payload['temperature'] = temperature
-
-        max_tokens = max_tokens or self._max_tokens
-        if max_tokens is not None:
-            payload['max_tokens'] = max_tokens
+        if messages is not None:
+            payload['messages'] = messages
+        else:
+            payload['messages'] = []
+            if system_prompt:
+                payload['messages'].append({
+                    'role': 'system',
+                    'content': system_prompt,
+                })
+            payload['messages'].append({
+                'role': 'user',
+                'content': prompt,
+            })
 
         completion = self._client.chat.completions.create(**payload)
         message = completion.choices[0].message.content
