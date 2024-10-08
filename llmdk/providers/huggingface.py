@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from os import environ as env
-from typing import Any, Optional, List, Dict
-
+from typing import Any, Optional, Dict
 from huggingface_hub import InferenceClient
-
 from llmdk.providers.interface import LlmInterface
 
 
@@ -26,31 +24,6 @@ class HuggingFaceClient(LlmInterface):
             token=api_key,
         )
 
-    def generate(
-        self,
-        prompt: str,
-        system_prompt: Optional[str] = None,
-        messages: Optional[List[Dict[str, str]]] = None,
-        **kwargs: Any,
-    ) -> str:
-        payload = self._generate_kwargs.copy()
-        payload.update(kwargs)
-        payload['model'] = self._model_name
-
-        if messages is not None:
-            payload['messages'] = messages
-        else:
-            payload['messages'] = []
-            if system_prompt:
-                payload['messages'].append({
-                    'role': 'system',
-                    'content': system_prompt,
-                })
-            payload['messages'].append({
-                'role': 'user',
-                'content': prompt,
-            })
-
+    def _execute_request(self, payload: Dict[str, Any]) -> str:
         completion = self._client.chat_completion(**payload)
-        message = completion.choices[0].message.content
-        return message
+        return completion.choices[0].message.content

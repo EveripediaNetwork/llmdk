@@ -3,5 +3,4 @@
 # flake8: noqa F401
 
 from .llmdk import *
-
-__version__ = '1.2410.0'
+from .version import __version__

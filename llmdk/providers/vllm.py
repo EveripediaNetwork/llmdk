@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Optional, List
-
+from typing import Any, Dict
 import requests
-
 from llmdk.providers.interface import LlmInterface
 
 
@@ -27,30 +25,6 @@ class VllmClient(LlmInterface):
         )
         return response.json()
 
-    def generate(
-        self,
-        prompt: str,
-        system_prompt: Optional[str] = None,
-        messages: Optional[List[Dict[str, str]]] = None,
-        **kwargs: Any,
-    ) -> str:
-        payload = self._generate_kwargs.copy()
-        payload.update(kwargs)
-
-        if messages is not None:
-            payload['messages'] = messages
-        else:
-            payload['messages'] = []
-            if system_prompt:
-                payload['messages'].append({
-                    'role': 'system',
-                    'content': system_prompt,
-                })
-            payload['messages'].append({
-                'role': 'user',
-                'content': prompt,
-            })
-
+    def _execute_request(self, payload: Dict[str, Any]) -> str:
         response = self._post(payload)
-        message = response['choices'][0]['message']['content']
-        return message
+        return response['choices'][0]['message']['content']

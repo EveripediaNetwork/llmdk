@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from os import environ as env
-from typing import Any, Optional, List, Dict
-
+from typing import Any, Optional, Dict
 from ollama import Client
-
 from llmdk.providers.interface import LlmInterface
 
 
@@ -30,37 +28,7 @@ class OllamaClient(LlmInterface):
 
         self._options = options or {}
 
-    def generate(
-        self,
-        prompt: str,
-        system_prompt: Optional[str] = None,
-        messages: Optional[List[Dict[str, str]]] = None,
-        options: Optional[dict] = None,
-        **kwargs: Any,
-    ) -> str:
-        payload = self._generate_kwargs.copy()
-        payload.update(kwargs)
-        payload['model'] = self._model_name
-
-        if messages is not None:
-            payload['messages'] = messages
-        else:
-            payload['messages'] = []
-            if system_prompt:
-                payload['messages'].append({
-                    'role': 'system',
-                    'content': system_prompt,
-                })
-            payload['messages'].append({
-                'role': 'user',
-                'content': prompt,
-            })
-
-        merged_options = self._options.copy()
-        if options:
-            merged_options.update(options)
-        payload['options'] = merged_options
-
+    def _execute_request(self, payload: Dict[str, Any]) -> str:
+        payload['options'] = self._options
         response = self._client.chat(**payload)
-        message = response['message']['content']
-        return message
+        return response['message']['content']
