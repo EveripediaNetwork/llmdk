@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections.abc import Iterator
 from os import environ as env
 from typing import Any, Optional, Dict
 from ollama import Client
@@ -32,3 +33,13 @@ class OllamaClient(LlmInterface):
         payload['options'] = self._options
         response = self._client.chat(**payload)
         return response['message']['content']
+
+    def _execute_stream_request(
+        self,
+        payload: Dict[str, Any],
+    ) -> Iterator[str]:
+        payload['options'] = self._options
+        payload['stream'] = True
+        for chunk in self._client.chat(**payload):
+            if chunk['message']['content']:
+                yield chunk['message']['content']

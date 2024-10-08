@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from os import environ as env
-from typing import Any, Optional, Dict
+from typing import Any, Iterator, Optional, Dict
 from groq import Groq
 from llmdk.providers.interface import LlmInterface
 
@@ -26,3 +26,12 @@ class GroqClient(LlmInterface):
     def _execute_request(self, payload: Dict[str, Any]) -> str:
         completion = self._client.chat.completions.create(**payload)
         return completion.choices[0].message.content
+
+    def _execute_stream_request(
+        self,
+        payload: Dict[str, Any],
+    ) -> Iterator[str]:
+        payload['stream'] = True
+        for chunk in self._client.chat.completions.create(**payload):
+            if chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content

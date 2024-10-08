@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections.abc import Iterator
 from enum import Enum
-
+from typing import Any, Dict, List, Optional
 from llmdk.providers.anthropic import AnthropicClient
 from llmdk.providers.groq import GroqClient
 from llmdk.providers.huggingface import HuggingFaceClient
 from llmdk.providers.ollama import OllamaClient
 from llmdk.providers.openai import OpenAiClient
-from llmdk.providers.vllm import VllmClient
 
 
 class Providers(Enum):
@@ -17,7 +17,6 @@ class Providers(Enum):
     HUGGINGFACE = 'huggingface'
     OLLAMA = 'ollama'
     OPENAI = 'openai'
-    VLLM = 'vllm'
 
 
 class Llmdk:
@@ -80,17 +79,22 @@ class Llmdk:
             )
             return
 
-        if (
-            provider == Providers.VLLM
-            or provider == Providers.VLLM.value
-        ):
-            self._client = VllmClient(
-                base_url=base_url,
-            )
-            return
-
         raise ValueError(f"Provider {provider} is not supported")
 
     # Fallback to the original client
     def __getattr__(self, name):
         return getattr(self._client, name)
+
+    def stream(
+        self,
+        prompt: str,
+        system: Optional[str] = None,
+        messages: Optional[List[Dict[str, str]]] = None,
+        **kwargs: Any,
+    ) -> Iterator[str]:
+        return self._client.stream(
+            prompt,
+            system=system,
+            messages=messages,
+            **kwargs,
+        )

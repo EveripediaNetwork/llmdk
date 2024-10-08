@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections.abc import Iterator
 from os import environ as env
 from typing import Any, Optional, Dict
 from openai import OpenAI
@@ -31,3 +32,12 @@ class OpenAiClient(LlmInterface):
     def _execute_request(self, payload: Dict[str, Any]) -> str:
         completion = self._client.chat.completions.create(**payload)
         return completion.choices[0].message.content
+
+    def _execute_stream_request(
+        self,
+        payload: Dict[str, Any],
+    ) -> Iterator[str]:
+        payload['stream'] = True
+        for chunk in self._client.chat.completions.create(**payload):
+            if chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content
