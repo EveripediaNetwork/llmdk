@@ -84,17 +84,3 @@ class Llmdk:
     # Fallback to the original client
     def __getattr__(self, name):
         return getattr(self._client, name)
-
-    def stream(
-        self,
-        prompt: str,
-        system: Optional[str] = None,
-        messages: Optional[List[Dict[str, str]]] = None,
-        **kwargs: Any,
-    ) -> Iterator[str]:
-        return self._client.stream(
-            prompt,
-            system=system,
-            messages=messages,
-            **kwargs,
-        )
