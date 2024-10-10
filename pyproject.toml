@@ -30,7 +30,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ['llmdk']
+packages = ['llmdk', 'llmdk.providers']
 
 [tool.setuptools.dynamic]
 version = {attr = 'llmdk.version.__version__'}
